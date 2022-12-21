@@ -315,14 +315,43 @@ def summary(bybit_url, threshold):
 
     print("Analysing based on each cluster:")
     print("Recent 10 clusters high, low, average close around the 4h200ema")
+    cluster_close_max = []
+    cluster_close_min = []
+    stddev_above = []
+    stddev_below = []
     for i in range(-1, -11, -1):
-        print(i)
+        # print(i)
         cluster = clustered_price_difference_closes[i]
-        print(cluster)
-        cluster_closes_high = max(cluster)
+        # print(cluster)
+        # print("cluster closes max", max(cluster))
+        cluster_close_max.append(max(cluster))
+        # print("cluster closes min", min(cluster))
+        cluster_close_min.append(min(cluster))
+        if len(remove_negatives(cluster)) > 1:
+            # print("Std dev (1,2,3) of closing price above 4h 200ema:")  # this means if you place a stop % above the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
+            above_stddev_closes = statistics.stdev(remove_negatives(cluster))
+            # print(str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3))
+            stddev_above.append([str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3)])
+        else:
+            stddev_above.append(["none"])
+        if len(remove_positives(cluster)) > 1:
+            # print("Std dev (1,2,3) of closing price below 4h 200ema:")  # this means if you place a stop % below the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
+            below_stddev_closes = statistics.stdev(remove_positives(cluster))
+            # print(str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3))
+            stddev_below.append([str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3)])
+        else:
+            stddev_below.append(["none"])
+    print("Recent 10 clusters close highs:")
+    print(cluster_close_max)
+    print("Recent 10 clusters close lows:")
+    print(cluster_close_min)
+    print("Recent 10 clusters std dev (1,2,3) of closing price above 4h 200ema:")
+    print(stddev_above)
+    print("Recent 10 clusters std dev (1,2,3) of closing price below 4h 200ema:")
+    print(stddev_below)
 
 
-
+    #TODO cluster wicks??
     print("Whole dataset below x%, 2 std deviations:")
     print("Whole dataset below x%, 3 std deviations:")
     print("Average cluster std deviation")
