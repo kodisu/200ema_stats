@@ -205,81 +205,89 @@ def summary(bybit_url, threshold):
     ohlc_data = get_price_history(
         bybit_url)
 
-    print("ema200 data:")
+    # print("ema200 data:")
     ema200_data = get_200ema_list(ohlc_data)
-    print(ema200_data)
+    # print(ema200_data)
 
     # CLOSES
-    print("Difference in close price and 200ema")
+    # print("Difference in close price and 200ema")
     difference = get_difference_price_and_200ema(ohlc_data, ema200_data, 4)
-    print(difference)
+    # print(difference)
 
-    print("percentage differences closes and 200ema")
+    # print("percentage differences closes and 200ema")
     percentage_difference = get_percentage_difference_price(difference, ohlc_data, 4)
-    print(percentage_difference)
+    # print(percentage_difference)
 
-    print("percentage differences closes and 200ema replaced with 101 if outside of threshold range")
+    # print("percentage differences closes and 200ema replaced with 101 if outside of threshold range")
     replaced_percentage_difference_closes = replace_percentage_price(threshold, percentage_difference)
-    print(replaced_percentage_difference_closes)
+    # print(replaced_percentage_difference_closes)
     replaced_percentage_difference_closes_2 = copy.deepcopy(replaced_percentage_difference_closes)
 
-    print("percentage difference closes and 200ema in one long list with the 101 removed")
+    # print("percentage difference closes and 200ema in one long list with the 101 removed")
     removed_replaced_values_closes = remove_replaced_percentage_price(replaced_percentage_difference_closes)
-    print(removed_replaced_values_closes)
+    # print(removed_replaced_values_closes)
 
     # HIGHS
-    print("HIGHS")
-    print("highs with candle closes below the threshold with 101 if outside of threshold range")
+    # print("HIGHS")
+    # print("highs with candle closes below the threshold with 101 if outside of threshold range")
     price_highs_within_threshold = get_high_from_candle_closes(replaced_percentage_difference_closes_2, ohlc_data)
-    print(price_highs_within_threshold)
+    # print(price_highs_within_threshold)
 
-    print("Difference in highs and 200ema, for closes below threshold with 101 if outside of threshold range")
+    # print("Difference in highs and 200ema, for closes below threshold with 101 if outside of threshold range")
     difference_highs = get_difference_price_and_200ema(ohlc_data, ema200_data, 2)
-    print(difference_highs)
+    # print(difference_highs)
 
-    print("percentage differences highs and 200ema, for closes below threshold with 101 if outside of threshold range")
+    # print("percentage differences highs and 200ema, for closes below threshold with 101 if outside of threshold range")
     percentage_difference_highs = get_percentage_difference_price(difference_highs, ohlc_data, 2)
-    print(percentage_difference_highs)
+    # print(percentage_difference_highs)
 
-    print("percentage differences of highs and 200ema, replaced with 101 if outside of threshold range")
+    # print("percentage differences of highs and 200ema, replaced with 101 if outside of threshold range")
     replaced_percentage_difference_highs = replace_percentage_price(threshold, percentage_difference_highs)
-    print(replaced_percentage_difference_highs)
+    # print(replaced_percentage_difference_highs)
 
-    print("percentage difference of highs and 200ema, in one long list with the 101 removed")
+    # print("percentage difference of highs and 200ema, in one long list with the 101 removed")
     removed_replaced_values_highs = remove_replaced_percentage_price(replaced_percentage_difference_highs)
-    print(removed_replaced_values_highs)
+    # print(removed_replaced_values_highs)
 
     # LOWS
-    print("LOWS")
-    print("lows with candle closes below the threshold with 101 if outside of threshold range")
+    # print("LOWS")
+    # print("lows with candle closes below the threshold with 101 if outside of threshold range")
     price_lows_within_threshold = get_low_from_candle_closes(replaced_percentage_difference_closes_2, ohlc_data)
-    print(price_lows_within_threshold)
+    # print(price_lows_within_threshold)
 
-    print("Difference in lows and 200ema, for closes below threshold with 101 if outside of threshold range")
+    # print("Difference in lows and 200ema, for closes below threshold with 101 if outside of threshold range")
     difference_lows = get_difference_price_and_200ema(ohlc_data, ema200_data, 3)
-    print(difference_lows)
+    # print(difference_lows)
 
-    print("percentage differences lows and 200ema, for closes below threshold with 101 if outside of threshold range")
+    # print("percentage differences lows and 200ema, for closes below threshold with 101 if outside of threshold range")
     percentage_difference_lows = get_percentage_difference_price(difference_lows, ohlc_data, 3)
-    print(percentage_difference_lows)
+    # print(percentage_difference_lows)
 
-    print("percentage differences of lows and 200ema, replaced with 101 if outside of threshold range")
+    # print("percentage differences of lows and 200ema, replaced with 101 if outside of threshold range")
     replaced_percentage_difference_lows = replace_percentage_price(threshold, percentage_difference_lows)
-    print(replaced_percentage_difference_lows)
+    # print(replaced_percentage_difference_lows)
 
-    print("percentage difference of lows and 200ema, in one long list with the 101 removed")
+    # print("percentage difference of lows and 200ema, in one long list with the 101 removed")
     removed_replaced_values_lows = remove_replaced_percentage_price(replaced_percentage_difference_lows)
-    print(removed_replaced_values_lows)
+    # print(removed_replaced_values_lows)
 
     # CLUSTERS
-    print("CLUSTERS")
-    print("lists within a list of price clusters around the 4h200ema within the threshold")
-    print(replaced_percentage_difference_closes)
+    # print("CLUSTERS")
+    # print("lists within a list of price clusters around the 4h200ema within the threshold")
+    # print(replaced_percentage_difference_closes)
     clustered_price_difference_closes = create_array_of_array(replaced_percentage_difference_closes)
-    print(clustered_price_difference_closes)
+    # print(clustered_price_difference_closes)
+    # print(replaced_percentage_difference_highs)
+    clustered_price_difference_highs = create_array_of_array(replaced_percentage_difference_highs)
+    print(clustered_price_difference_highs)
+    # print(replaced_percentage_difference_lows)
+    clustered_price_difference_lows = create_array_of_array(replaced_percentage_difference_lows)
+    print(clustered_price_difference_lows)
+
+
 
     # so basically i've got the data for price differences above and below the 4h200ema when the price is within a 10% range of the 4h200ema
-    print("Across all the clusters of a " + str(threshold)+"% price range of the 4h200ema...")
+    print("Across all the local clusters of a " + str(threshold)+"% price range of the 4h200ema...")
 
     print("Average closing price (absolute value) around the 4h200ema:")
     # make all values absolute and average the values
@@ -313,20 +321,23 @@ def summary(bybit_url, threshold):
     above_stddev_lows = statistics.stdev(remove_negatives(removed_replaced_values_lows))
     print(str(above_stddev_lows), str(above_stddev_lows * 2), str(above_stddev_lows * 3))
 
-    print("Analysing based on each cluster:")
-    print("Recent 10 clusters high, low, average close around the 4h200ema")
+    print("Analysing based on each local cluster:")
+    print("Recent 10 local clusters high, low, average close around the 4h200ema")
     cluster_close_max = []
     cluster_close_min = []
     stddev_above = []
     stddev_below = []
     for i in range(-1, -11, -1):
         # print(i)
-        cluster = clustered_price_difference_closes[i]
-        # print(cluster)
-        # print("cluster closes max", max(cluster))
-        cluster_close_max.append(max(cluster))
-        # print("cluster closes min", min(cluster))
-        cluster_close_min.append(min(cluster))
+        try:
+            cluster = clustered_price_difference_closes[i]
+            # print(cluster)
+            # print("cluster closes max", max(cluster))
+            cluster_close_max.append(max(cluster))
+            # print("cluster closes min", min(cluster))
+            cluster_close_min.append(min(cluster))
+        except IndexError:  # means there's less than 10 recent clusters
+            break
         if len(remove_negatives(cluster)) > 1:
             # print("Std dev (1,2,3) of closing price above 4h 200ema:")  # this means if you place a stop % above the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
             above_stddev_closes = statistics.stdev(remove_negatives(cluster))
@@ -341,23 +352,55 @@ def summary(bybit_url, threshold):
             stddev_below.append([str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3)])
         else:
             stddev_below.append(["none"])
-    print("Recent 10 clusters close highs:")
+    print("Recent 10 local clusters close highs:")
     print(cluster_close_max)
-    print("Recent 10 clusters close lows:")
+    print("Recent 10 local clusters close lows:")
     print(cluster_close_min)
-    print("Recent 10 clusters std dev (1,2,3) of closing price above 4h 200ema:")
+    print("Recent 10 local clusters std dev (1,2,3) of closing price above 4h 200ema:")
     print(stddev_above)
-    print("Recent 10 clusters std dev (1,2,3) of closing price below 4h 200ema:")
+    print("Recent 10 local clusters std dev (1,2,3) of closing price below 4h 200ema:")
     print(stddev_below)
 
+    print("Recent 10 local clusters wick high, wick low, average close around the 4h200ema")
+    cluster_high_max = []
+    cluster_low_min = []
+    stddev_high_above = []
+    stddev_low_below = []
+    for i in range(-1, -11, -1):
+        # print(i)
+        try:
+            cluster_high = clustered_price_difference_highs[i]
+            cluster_low = clustered_price_difference_lows[i]
+            # print(cluster)
+            # print("cluster closes max", max(cluster))
+            cluster_high_max.append(max(cluster_high))
+            # print("cluster closes min", min(cluster))
+            cluster_low_min.append(min(cluster_low))
+        except IndexError:  # means there's less than 10 recent clusters
+            break
 
-    #TODO cluster wicks??
-    print("Whole dataset below x%, 2 std deviations:")
-    print("Whole dataset below x%, 3 std deviations:")
-    print("Average cluster std deviation")
-
-    print("Wick price data:")
-    print("Average highs of cluster, std deviation:")
+        if len(remove_negatives(cluster_high)) > 1:
+            # print("Std dev (1,2,3) of closing price above 4h 200ema:")  # this means if you place a stop % above the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
+            above_stddev_closes = statistics.stdev(remove_negatives(cluster_high))
+            # print(str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3))
+            stddev_high_above.append([str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3)])
+        else:
+            stddev_high_above.append(["none"])
+        if len(remove_positives(cluster_low)) > 1:
+            # print("Std dev (1,2,3) of closing price below 4h 200ema:")  # this means if you place a stop % below the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
+            below_stddev_closes = statistics.stdev(remove_positives(cluster_low))
+            # print(str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3))
+            stddev_low_below.append([str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3)])
+        else:
+            stddev_low_below.append(["none"])
+    print("Recent 10 local clusters close highs:")
+    print(cluster_high_max)
+    print("Recent 10 local clusters close lows:")
+    print(cluster_low_min)
+    print("Recent 10 local clusters std dev (1,2,3) of wick high price above 4h 200ema:")
+    print(stddev_high_above)
+    print("Recent 10 local clusters std dev (1,2,3) of wick low price below 4h 200ema:")
+    print(stddev_low_below)
 
 
 if __name__ == '__main__':
@@ -397,4 +440,5 @@ if __name__ == '__main__':
     #         std = statistics.stdev(i)
     #         print(std)
 
-    summary("https://api.cryptowat.ch/markets/bybit/ethusdt-perpetual-futures/ohlc?periods=14400", 10)
+    # summary("https://api.cryptowat.ch/markets/bybit/ethusdt-perpetual-futures/ohlc?periods=14400", 10)
+    summary("https://api.cryptowat.ch/markets/bybit/1000luncusdt-perpetual-futures/ohlc?periods=14400", 7)
