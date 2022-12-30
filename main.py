@@ -194,6 +194,14 @@ def get_low_from_candle_closes(replaced_percentage_difference_list, ohlc_list):
     return result
 
 
+def get_standard_dev(list):
+    if len(list) > 1:
+        return statistics.stdev(list)
+    else:
+        return 9999999
+
+
+
 def summary(bybit_url, threshold):
     # rules:
     # no.1 we only consider clusters where the closes are within a % range. Candle with god wicks will not be counted into a cluster. However candles with closes within the range and large wicks are counted.
@@ -306,19 +314,19 @@ def summary(bybit_url, threshold):
     print(str(average_of_list(remove_positives(removed_replaced_values_lows))) + "%")
 
     print("Std dev (1,2,3) of closing price above 4h 200ema:")  # this means if you place a stop % above the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
-    above_stddev_closes = statistics.stdev(remove_negatives(removed_replaced_values_closes))
+    above_stddev_closes = get_standard_dev(remove_negatives(removed_replaced_values_closes))
     print(str(above_stddev_closes), str(above_stddev_closes*2), str(above_stddev_closes*3))
 
     print("Std dev (1,2,3) of closing price below 4h 200ema:")  # this means if you place a stop % below the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
-    below_stddev_closes = statistics.stdev(remove_positives(removed_replaced_values_closes))
+    below_stddev_closes = get_standard_dev(remove_positives(removed_replaced_values_closes))
     print(str(below_stddev_closes), str(below_stddev_closes*2), str(below_stddev_closes*3))
 
     print("Std dev (1,2,3) of wick high price above 4h 200ema:")  # this means if you place a stop % above the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a wick.
-    above_stddev_highs = statistics.stdev(remove_negatives(removed_replaced_values_highs))
+    above_stddev_highs = get_standard_dev(remove_negatives(removed_replaced_values_highs))
     print(str(above_stddev_highs), str(above_stddev_highs * 2), str(above_stddev_highs * 3))
 
     print("Std dev (1,2,3) of wick low price below 4h 200ema:")  # this means if you place a stop % below the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a wick.
-    above_stddev_lows = statistics.stdev(remove_negatives(removed_replaced_values_lows))
+    above_stddev_lows = get_standard_dev(remove_negatives(removed_replaced_values_lows))
     print(str(above_stddev_lows), str(above_stddev_lows * 2), str(above_stddev_lows * 3))
 
     print("Analysing based on each local cluster:")
@@ -340,14 +348,14 @@ def summary(bybit_url, threshold):
             break
         if len(remove_negatives(cluster)) > 1:
             # print("Std dev (1,2,3) of closing price above 4h 200ema:")  # this means if you place a stop % above the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
-            above_stddev_closes = statistics.stdev(remove_negatives(cluster))
+            above_stddev_closes = get_standard_dev(remove_negatives(cluster))
             # print(str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3))
             stddev_above.append([str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3)])
         else:
             stddev_above.append(["none"])
         if len(remove_positives(cluster)) > 1:
             # print("Std dev (1,2,3) of closing price below 4h 200ema:")  # this means if you place a stop % below the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
-            below_stddev_closes = statistics.stdev(remove_positives(cluster))
+            below_stddev_closes = get_standard_dev(remove_positives(cluster))
             # print(str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3))
             stddev_below.append([str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3)])
         else:
@@ -381,21 +389,21 @@ def summary(bybit_url, threshold):
 
         if len(remove_negatives(cluster_high)) > 1:
             # print("Std dev (1,2,3) of closing price above 4h 200ema:")  # this means if you place a stop % above the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
-            above_stddev_closes = statistics.stdev(remove_negatives(cluster_high))
+            above_stddev_closes = get_standard_dev(remove_negatives(cluster_high))
             # print(str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3))
             stddev_high_above.append([str(above_stddev_closes), str(above_stddev_closes * 2), str(above_stddev_closes * 3)])
         else:
             stddev_high_above.append(["none"])
         if len(remove_positives(cluster_low)) > 1:
             # print("Std dev (1,2,3) of closing price below 4h 200ema:")  # this means if you place a stop % below the 4h200ema, you won't get stopped 68%, 95% or 99% of the time, on a close.
-            below_stddev_closes = statistics.stdev(remove_positives(cluster_low))
+            below_stddev_closes = get_standard_dev(remove_positives(cluster_low))
             # print(str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3))
             stddev_low_below.append([str(below_stddev_closes), str(below_stddev_closes * 2), str(below_stddev_closes * 3)])
         else:
             stddev_low_below.append(["none"])
-    print("Recent 10 local clusters close highs:")
+    print("Recent 10 local clusters wick highs:")
     print(cluster_high_max)
-    print("Recent 10 local clusters close lows:")
+    print("Recent 10 local clusters wick lows:")
     print(cluster_low_min)
     print("Recent 10 local clusters std dev (1,2,3) of wick high price above 4h 200ema:")
     print(stddev_high_above)
@@ -441,4 +449,6 @@ if __name__ == '__main__':
     #         print(std)
 
     # summary("https://api.cryptowat.ch/markets/bybit/ethusdt-perpetual-futures/ohlc?periods=14400", 10)
-    summary("https://api.cryptowat.ch/markets/bybit/1000luncusdt-perpetual-futures/ohlc?periods=14400", 7)
+    # summary("https://api.cryptowat.ch/markets/bybit/1000luncusdt-perpetual-futures/ohlc?periods=14400", 7)
+    summary("https://api.cryptowat.ch/markets/bybit/renusdt-perpetual-futures/ohlc?periods=14400", 10)
+    # summary("https://api.cryptowat.ch/markets/okx/lunausdt-perpetual-futures/ohlc?periods=14400", 7)
